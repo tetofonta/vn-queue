@@ -7,7 +7,7 @@ using namespace omnetpp;
 
 class Generator : public cSimpleModule {
 private:
-    int user_id;
+    unsigned long user_id;
     simsignal_t user_arrival_signal;
 
 public:

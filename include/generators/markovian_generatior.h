@@ -1,5 +1,5 @@
-#ifndef __QUEUE_MARKOVIAN_GENERATOR
-#define __QUEUE_MARKOVIAN_GENERATOR
+#ifndef __QUEUE_PARAMETRIC_GENERATOR
+#define __QUEUE_PARAMETRIC_GENERATOR
 
 #include <generator.h>
 
@@ -7,10 +7,10 @@ using namespace omnetpp;
 
 class MarkovianGenerator: public Generator{
 private:
-    double mean;
+    double distributionMean;
 public:
+    virtual void initialize(void) override;
     virtual void scheduleNext(void) override;
-    virtual void initialize() override;
 };
 
 Define_Module(MarkovianGenerator);

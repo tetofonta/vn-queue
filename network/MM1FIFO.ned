@@ -15,14 +15,24 @@
 
 simple MarkovianGenerator{
     parameters:
- 	   @signal[user_arrival](type="long");
- 	   
- 	   double mean;
+ 	   @signal[user_arrival](type="unsigned long");
+ 	   @statistic[user_sent](title="User sent"; source="user_arrival"; record=vector,stats; interpolationmode=none);
+ 	   	
+ 	   double distribution_mean;
  	gates:
  	   output gate;
 }
 
-simple Queue{ 	   
+simple Server{ 	   
+    parameters:
+        @signal[user_lost](type="unsigned long");
+        @signal[user_processed](type="process_result_m");
+        @signal[user_queued](type="unsigned long");
+        @signal[user_unqueued](type="unsigned long");
+        
+        
+        int queue_depth;
+        double serve_time;
  	gates:
  	   input ingress;
 }
@@ -31,7 +41,7 @@ simple Queue{
 network MM1FIFO {
     submodules:
         gen: MarkovianGenerator;
-        queue: Queue;
+        srv: Server;
     connections:
-        gen.gate --> queue.ingress;
+        gen.gate --> srv.ingress;
 }

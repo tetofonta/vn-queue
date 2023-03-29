@@ -2,7 +2,7 @@
 # OMNeT++/OMNEST Makefile for queue
 #
 # This file was generated with the command:
-#  opp_makemake -f --deep -O out -I. -Iinclude -I/usr/include/fmt/ -lfmt
+#  opp_makemake -f --deep -O out -I. -Iinclude -I/usr/include/fmt/ -Imessages -lfmt
 #
 
 # Name of target to be created (-o option)
@@ -19,7 +19,7 @@ USERIF_LIBS = $(ALL_ENV_LIBS) # that is, $(QTENV_LIBS) $(CMDENV_LIBS)
 #USERIF_LIBS = $(QTENV_LIBS)
 
 # C++ include paths (with -I)
-INCLUDE_PATH = -I. -Iinclude -I/usr/include/fmt/
+INCLUDE_PATH = -I. -Iinclude -I/usr/include/fmt/ -Imessages
 
 # Additional object and library files to link with
 EXTRA_OBJS =
@@ -33,10 +33,18 @@ PROJECTRELATIVE_PATH =
 O = $(PROJECT_OUTPUT_DIR)/$(CONFIGNAME)/$(PROJECTRELATIVE_PATH)
 
 # Object files for local .cpp, .msg and .sm files
-OBJS = $O/src/generator/generator.o $O/src/generator/markovian_generator.o $O/src/queue/queue.o
+OBJS = \
+    $O/src/generator/generator.o \
+    $O/src/generator/markovian_generator.o \
+    $O/src/generator/parametric_generator.o \
+    $O/src/queue/server.o \
+    $O/messages/client_arrived/client_arrived_m.o \
+    $O/messages/process_result/process_result_m.o
 
 # Message files
-MSGFILES =
+MSGFILES = \
+    messages/client_arrived/client_arrived.msg \
+    messages/process_result/process_result.msg
 
 # SM files
 SMFILES =
