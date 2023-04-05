@@ -27,7 +27,7 @@ void Server::handleMessage(cMessage * msg){
         result_message->setUser_id(this->workingClient->userId());
         result_message->setWait_time(this->workingClient->waitTime());
         result_message->setProcess_time(this->workingClient->processTime());
-        emit(this->user_processed, result_message.get());
+        emit(this->user_processed, this->workingClient->waitTime());
 
         this->workingClient = this->serveNext();
     } else {
@@ -64,6 +64,6 @@ unique_ptr<Client> Server::serveNext(){
     emit(this->user_unqueued, c->userId());
     c->serve();
     EV << fmt::format("Serving user {}", c->userId()) << endl;
-    scheduleAfter(par("serve_time"), new cMessage());
+    this->scheduleNext();
     return c;
 }

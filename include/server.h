@@ -25,10 +25,9 @@ public:
     virtual void initialize() override;
     virtual void handleMessage(cMessage *msg) override;
 
-    unique_ptr<Client> serveNext();
+    virtual unique_ptr<Client> serveNext();
+
+    virtual void scheduleNext() =0;
 
 };
-
-Define_Module(Server);
-
 #endif

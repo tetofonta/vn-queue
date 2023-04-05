@@ -36,8 +36,8 @@ O = $(PROJECT_OUTPUT_DIR)/$(CONFIGNAME)/$(PROJECTRELATIVE_PATH)
 OBJS = \
     $O/src/generator/generator.o \
     $O/src/generator/markovian_generator.o \
-    $O/src/generator/parametric_generator.o \
-    $O/src/queue/server.o \
+    $O/src/server/markovian_server.o \
+    $O/src/server/server.o \
     $O/messages/client_arrived/client_arrived_m.o \
     $O/messages/process_result/process_result_m.o
 
