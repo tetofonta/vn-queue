@@ -1,6 +1,5 @@
 #include <server.h>
 #include <client_arrived/client_arrived_m.h>
-#include <process_result/process_result_m.h>
 #include <fmt/format.h>
 
 using namespace std;
@@ -12,22 +11,21 @@ Server::Server(){
 
 void Server::initialize(){
     this->queue_depth = par("queue_depth");
-    this->user_lost = registerSignal("user_lost");
-    this->user_processed = registerSignal("user_processed");
-    this->user_queued = registerSignal("user_queued");
-    this->user_unqueued = registerSignal("user_unqueued");
+    this->user_lost_count = registerSignal("user_lost_count");
+    this->user_processed_count = registerSignal("user_processed_count");
+    this->users_in_system = registerSignal("users_in_system");
+    this->user_process_time = registerSignal("user_process_time");
+    this->user_wait_time = registerSignal("user_wait_time");
 }
 
 void Server::handleMessage(cMessage * msg){
     unique_ptr<cMessage> msg_p(msg);
 
     if(msg_p->isSelfMessage()){
-        unique_ptr<process_result_m> result_message(new process_result_m());
 
-        result_message->setUser_id(this->workingClient->userId());
-        result_message->setWait_time(this->workingClient->waitTime());
-        result_message->setProcess_time(this->workingClient->processTime());
-        emit(this->user_processed, this->workingClient->waitTime());
+        emit(this->user_processed_count, ++this->processed_number);
+        emit(this->user_wait_time, this->workingClient->waitTime());
+        emit(this->user_process_time, this->workingClient->processTime());
 
         this->workingClient = this->serveNext();
     } else {
@@ -37,7 +35,7 @@ void Server::handleMessage(cMessage * msg){
 
         if(this->queue_depth > 0 && this->users_queue.size() >= this->queue_depth){
             EV << fmt::format("Lost user {}", client.userId()) << endl;
-            emit(this->user_lost, client.userId());
+            emit(this->user_lost_count, ++this->lost_number);
             return;
         }
 
@@ -47,13 +45,15 @@ void Server::handleMessage(cMessage * msg){
             this->workingClient = this->serveNext();
         } else {
             EV << fmt::format("Queuing user {} {}/{}", client.userId(), this->users_queue.size(), this->queue_depth) << endl;
-            emit(this->user_queued, this->users_queue.size());
+            emit(this->users_in_system, this->users_queue.size() + 1); //server is busy and user has been queued
         }
     }
 
 }
 
 unique_ptr<Client> Server::serveNext(){
+    emit(this->users_in_system, this->users_queue.size()); //the server has finished working on someone, considering that if a user would be popped it would still be in the system we can send the actual queue length
+
     if(this->users_queue.size() == 0) {
         return nullptr;
     }
@@ -61,7 +61,6 @@ unique_ptr<Client> Server::serveNext(){
     auto c = make_unique<Client>(this->users_queue.front());
 
     this->users_queue.pop();
-    emit(this->user_unqueued, c->userId());
     c->serve();
     EV << fmt::format("Serving user {}", c->userId()) << endl;
     this->scheduleNext();

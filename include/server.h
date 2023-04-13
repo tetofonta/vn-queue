@@ -13,12 +13,18 @@ class Server: public cSimpleModule{
 private:
     queue<Client> users_queue;
     long queue_depth = 0;
-    simsignal_t user_lost;
-    simsignal_t user_processed;
-    simsignal_t user_queued;
-    simsignal_t user_unqueued;
+
+    simsignal_t user_lost_count;
+    simsignal_t user_processed_count;
+    simsignal_t users_in_system;
+    simsignal_t user_wait_time;
+    simsignal_t user_process_time;
 
     unique_ptr<Client> workingClient = nullptr;
+
+    unsigned long lost_number = 0;
+    unsigned long processed_number = 0;
+
 public:
     Server();
 

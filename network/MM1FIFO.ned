@@ -24,14 +24,16 @@ simple MarkovianGenerator{
 
 simple MarkovianServer{ 	   
     parameters:
-        @signal[user_lost](type="unsigned long");
-        @signal[user_processed](type="simtime_t");
-        @signal[user_queued](type="unsigned long");
-        @signal[user_unqueued](type="unsigned long");
+        @signal[user_lost_count](type="unsigned long");
+        @signal[user_processed_count](type="unsigned long");
+        @signal[users_in_system](type="unsigned long");
+        @signal[user_wait_time](type="simtime_t");
+        @signal[user_process_time](type="simtime_t");
         
-        @statistic[user_queued](title="Queue Length"; source="user_queued"; record=vector,stats; interpolationmode=none);
-        @statistic[user_processed](title="Wait Time"; source="user_processed"; record=vector,stats; interpolationmode=none);
-        
+        @statistic[users_in_system](title="User in system"; source="users_in_system"; record=vector,stats; interpolationmode=none);
+        @statistic[user_wait_time](title="Wait Time"; source="user_wait_time"; record=vector,stats; interpolationmode=none);
+        @statistic[users_lost](title="User Lost Count"; source="user_lost_count"; record=vector,stats; interpolationmode=none);
+        @statistic[users_processed](title="User Processed Count"; source="user_processed_count"; record=vector,stats; interpolationmode=none);
         
         int queue_depth;
  	    double distribution_mean;

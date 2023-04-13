@@ -33,18 +33,11 @@ PROJECTRELATIVE_PATH =
 O = $(PROJECT_OUTPUT_DIR)/$(CONFIGNAME)/$(PROJECTRELATIVE_PATH)
 
 # Object files for local .cpp, .msg and .sm files
-OBJS = \
-    $O/src/generator/generator.o \
-    $O/src/generator/markovian_generator.o \
-    $O/src/server/markovian_server.o \
-    $O/src/server/server.o \
-    $O/messages/client_arrived/client_arrived_m.o \
-    $O/messages/process_result/process_result_m.o
+OBJS = $O/src/generator/generator.o $O/src/generator/markovian_generator.o $O/src/server/markovian_server.o $O/src/server/server.o $O/messages/client_arrived/client_arrived_m.o
 
 # Message files
 MSGFILES = \
-    messages/client_arrived/client_arrived.msg \
-    messages/process_result/process_result.msg
+    messages/client_arrived/client_arrived.msg
 
 # SM files
 SMFILES =
