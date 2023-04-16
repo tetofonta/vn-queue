@@ -7,7 +7,6 @@ using namespace omnetpp;
 
 class MarkovianServer: public Server{
 private:
-    double distributionMean;
 public:
     MarkovianServer(): Server(){};
     virtual void initialize(void) override;

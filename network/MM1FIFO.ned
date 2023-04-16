@@ -16,8 +16,11 @@
 simple MarkovianGenerator{
     parameters:
  	   @signal[user_arrival](type="unsigned long");
- 	   	
- 	   double distribution_mean;
+ 	   
+ 	   @statistic[user_arrival](title="User Injected Count"; source="user_arrival"; record=max; interpolationmode=none);
+ 	   
+ 	   
+ 	   volatile double scheduleInterval;
  	gates:
  	   output gate;
 }
@@ -31,12 +34,12 @@ simple MarkovianServer{
         @signal[user_process_time](type="simtime_t");
         
         @statistic[users_in_system](title="User in system"; source="users_in_system"; record=vector,stats; interpolationmode=none);
+        @statistic[users_lost](title="User Lost Count"; source="user_lost_count"; record=max; interpolationmode=none);
+        //@statistic[users_processed](title="User Processed Count"; source="user_processed_count"; record=vector,stats; interpolationmode=none);        
         @statistic[user_wait_time](title="Wait Time"; source="user_wait_time"; record=vector,stats; interpolationmode=none);
-        @statistic[users_lost](title="User Lost Count"; source="user_lost_count"; record=vector,stats; interpolationmode=none);
-        @statistic[users_processed](title="User Processed Count"; source="user_processed_count"; record=vector,stats; interpolationmode=none);
-        
+                
         int queue_depth;
- 	    double distribution_mean;
+ 	    volatile double scheduleInterval;
  	gates:
  	   input ingress;
 }

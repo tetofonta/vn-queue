@@ -7,7 +7,6 @@ using namespace omnetpp;
 
 class MarkovianGenerator: public Generator{
 private:
-    double distributionMean;
 public:
     virtual void initialize(void) override;
     virtual void scheduleNext(void) override;

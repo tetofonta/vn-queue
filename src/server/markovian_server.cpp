@@ -3,10 +3,9 @@
 using namespace omnetpp;
 
 void MarkovianServer::initialize(){
-    this->distributionMean = par("distribution_mean");
     Server::initialize();
 }
 
 void MarkovianServer::scheduleNext(){
-    scheduleAfter(exponential(this->distributionMean), new cMessage());
+    scheduleAfter(par("scheduleInterval").doubleValue(), new cMessage());
 }
