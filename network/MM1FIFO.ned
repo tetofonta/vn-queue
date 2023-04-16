@@ -13,42 +13,50 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 // 
 
-simple MarkovianGenerator{
+simple MarkovianGenerator
+{
     parameters:
- 	   @signal[user_arrival](type="unsigned long");
- 	   
- 	   @statistic[user_arrival](title="User Injected Count"; source="user_arrival"; record=max; interpolationmode=none);
- 	   
- 	   
- 	   volatile double scheduleInterval;
- 	gates:
- 	   output gate;
+        @signal[user_arrival](type="unsigned long");
+
+        @statistic[user_arrival](title="User Injected Count"; source="user_arrival"; record=vector,max; interpolationmode=none);
+
+
+        volatile double scheduleInterval;
+    gates:
+        output gate;
 }
 
-simple MarkovianServer{ 	   
+simple MarkovianServer
+{
     parameters:
         @signal[user_lost_count](type="unsigned long");
         @signal[user_processed_count](type="unsigned long");
         @signal[users_in_system](type="unsigned long");
         @signal[user_wait_time](type="simtime_t");
         @signal[user_process_time](type="simtime_t");
-        
+
         @statistic[users_in_system](title="User in system"; source="users_in_system"; record=vector,stats; interpolationmode=none);
-        @statistic[users_lost](title="User Lost Count"; source="user_lost_count"; record=max; interpolationmode=none);
-        //@statistic[users_processed](title="User Processed Count"; source="user_processed_count"; record=vector,stats; interpolationmode=none);        
+        @statistic[users_lost](title="User Lost Count"; source="user_lost_count"; record=vector,max; interpolationmode=none);
         @statistic[user_wait_time](title="Wait Time"; source="user_wait_time"; record=vector,stats; interpolationmode=none);
-                
+        @statistic[user_process_time](title="Process Time"; source="user_process_time"; record=vector,stats; interpolationmode=none);
+
         int queue_depth;
- 	    volatile double scheduleInterval;
- 	gates:
- 	   input ingress;
+        volatile double scheduleInterval;
+    gates:
+        input ingress;
 }
 
 
-network MM1FIFO {
+network MM1FIFO
+{
+    @display("bgb=282,121");
     submodules:
-        gen: MarkovianGenerator;
-        srv: MarkovianServer;
+        gen: MarkovianGenerator {
+            @display("p=55,58");
+        }
+        srv: MarkovianServer {
+            @display("p=219,58");
+        }
     connections:
         gen.gate --> srv.ingress;
 }

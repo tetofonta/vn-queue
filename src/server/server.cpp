@@ -26,26 +26,27 @@ void Server::handleMessage(cMessage * msg){
         emit(this->user_processed_count, ++this->processed_number);
         emit(this->user_wait_time, this->workingClient->waitTime());
         emit(this->user_process_time, this->workingClient->processTime());
+        EV << fmt::format("Finished serving user {}", this->workingClient->userId());
 
         this->workingClient = this->serveNext();
     } else {
-
         unique_ptr<client_arrived_m> client_msg(check_and_cast<client_arrived_m *>(msg_p.release()));
         Client client(client_msg->getUser_id());
 
-        if(this->queue_depth > 0 && this->users_queue.size() >= this->queue_depth){
-            EV << fmt::format("Lost user {}", client.userId()) << endl;
-            emit(this->user_lost_count, ++this->lost_number);
-            return;
-        }
-
-        this->users_queue.push(client);
-
         if(this->workingClient == nullptr){
+            this->users_queue.push(client);
             this->workingClient = this->serveNext();
         } else {
-            EV << fmt::format("Queuing user {} {}/{}", client.userId(), this->users_queue.size(), this->queue_depth) << endl;
-            emit(this->users_in_system, this->users_queue.size() + 1); //server is busy and user has been queued
+            if(this->queue_depth > 0 && this->users_queue.size() >= this->queue_depth){
+                EV << fmt::format("Lost user {}", client.userId()) << endl;
+                emit(this->user_lost_count, ++this->lost_number);
+                emit(this->users_in_system, this->users_queue.size() + 1);
+                return;
+            } else {
+                this->users_queue.push(client);
+                EV << fmt::format("Queuing user {} {}/{}", client.userId(), this->users_queue.size(), this->queue_depth) << endl;
+                emit(this->users_in_system, this->users_queue.size() + 1); //server is busy and user has been queued
+            }
         }
     }
 

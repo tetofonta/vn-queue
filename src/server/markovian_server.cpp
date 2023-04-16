@@ -7,5 +7,5 @@ void MarkovianServer::initialize(){
 }
 
 void MarkovianServer::scheduleNext(){
-    scheduleAfter(par("scheduleInterval").doubleValue(), new cMessage());
+    scheduleAfter(par("scheduleInterval"), new cMessage());
 }
